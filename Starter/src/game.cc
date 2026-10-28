@@ -3,6 +3,7 @@
 #include <optional>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Joystick.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 
 void Game::initialize()
@@ -25,18 +26,30 @@ void Game::loop()
     {
         processEvents();
         sf::Joystick::update();
-
-        if (player && sf::Joystick::isConnected(0))
+// DEPLACEMENT MANETTE
+        // Déplacement gauche / droite : une seule valeur x, de -100 (gauche) à 100 (droite) ( suivant la logique des axes )
+        if (player)
         {
-            const float stick = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
-            const float croix = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX);
-            float x;
-            if (std::abs(stick) >= 15.f)   // stick poussé (au-delà de la zone morte)
-                x = stick;
-            else if (croix != 0.f)         // sinon, la croix directionnelle
-                x = croix;
-            else                           // rien de touché
-                x = 0.f;
+            float x = 0.f;
+
+            if (sf::Joystick::isConnected(0))
+            {
+                const float stick = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);    // stick gauche
+                const float croix = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX); // croix directionnelle
+                if (std::abs(stick) >= 15.f)
+                    x = stick;
+                else if (croix != 0.f)
+                    x = croix;
+            }
+
+            if (x == 0.f)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+                    x = -100.f;
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+                    x = 100.f;
+            }
+
             const float vitesse = 8.f;
             player->move({x / 100.f * vitesse, 0.f});
         }
