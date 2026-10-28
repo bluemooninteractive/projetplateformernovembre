@@ -1,0 +1,15 @@
+{
+  "name": "sfml-starter",
+  "version": "1.0.0",
+  "dependencies": [
+    {
+      "name": "sfml",
+      "default-features": false,
+      "features": [
+        "graphics",
+        "window",
+        "audio"
+      ]
+    }
+  ]
+}
