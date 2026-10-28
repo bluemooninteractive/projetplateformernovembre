@@ -20,6 +20,8 @@ private:
     sf::RenderWindow window;
     sf::Texture texture;
     std::optional<sf::Sprite> player;
+    float vitesseY = 0.f;   // vitesse verticale (négatif = monte)
+    float solY = 0.f;       // hauteur du sol
 };
 
 

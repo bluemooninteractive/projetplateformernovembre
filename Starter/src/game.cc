@@ -17,6 +17,7 @@ void Game::initialize()
     player.emplace(texture);
     player->setOrigin(player->getLocalBounds().getCenter());
     player->setPosition(sf::Vector2f(window.getSize()) / 2.f);
+    solY = player->getPosition().y;
 }
 
 void Game::loop()
@@ -54,8 +55,26 @@ void Game::loop()
             player->move({x / 100.f * vitesse, 0.f});
         }
 
+        // Saut
+        if (player)
+        {
+            const bool auSol = player->getPosition().y >= solY;
+            const bool sauter = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)
+                             || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)
+                             || sf::Joystick::isButtonPressed(0, 1);
+            if (auSol & sauter)
+                vitesseY = -15.f;
+                vitesseY += 0.6f;
+                player->move({0.f, vitesseY});
+            if (player->getPosition().y > solY)
+            {
+                player->setPosition({player->getPosition().x, solY});
+                vitesseY = 0.f;
+            }
+        }
+
         render();
-    }
+    }  
 }
 
 void Game::processEvents()
