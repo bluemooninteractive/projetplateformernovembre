@@ -1,27 +1,26 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <memory>
+#include <optional>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
 
-class Game
-{
+class Game {
 public:
-    Game();
+    void initialize();
     void loop();
 
 private:
     void processEvents();
-    void update();
     void render();
 
     sf::RenderWindow window;
-    sf::Texture cupheadTexture;
-    std::unique_ptr<sf::Sprite> cuphead;
+    sf::Texture texture;
+    std::optional<sf::Sprite> player;
 };
+
 
 #endif // GAME_HPP
