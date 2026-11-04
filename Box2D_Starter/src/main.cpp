@@ -29,12 +29,12 @@ int main() {
     double dt;
 
     Entity mario;
-    mario.Setup(sf::Color::Red,{600.800})
+    mario.Setup(sf::Color::Red,{600,400},{45,45});
 
-    physicalobject falling;   // le carré qui tombe
+    physicalobject falling;
     falling.Setup(monde, b2_dynamicBody, {0.f, 3.f});
 
-    physicalobject sol;       // un second objet, immobile, sur lequel il va se poser
+    physicalobject sol;
     sol.Setup(monde, b2_staticBody, {0.f, 10.f});
 
     while (window.isOpen()) {
@@ -48,16 +48,16 @@ int main() {
 
 
 
-        while (accumulateur >= kPas)   // autant de pas de physique que le temps écoulé en demande
+        while (accumulateur >= kPas)
         {
             b2World_Step(monde, kPas, kSousPas);
-            falling.Update();   // affiche sa position
+            falling.Update();
             accumulateur -= kPas;
         }
 
-        window.clear(sf::Color::Magenta);
-        window.display();
+        window.clear(sf::Color::Black);
         window.draw(mario);
+        window.display();
     }
 
     b2DestroyWorld(monde);

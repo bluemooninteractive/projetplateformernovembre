@@ -15,8 +15,8 @@ class Entity : public sf::Drawable {
 
 
     public:
-        // la signature exacte de sf::Drawable : sinon window.draw(...) n'appelle pas notre fonction
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void Setup(sf::Color color, sf::Vector2f position, sf::Vector2f size);
 
 
 

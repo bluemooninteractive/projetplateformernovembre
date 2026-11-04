@@ -19,7 +19,7 @@ void physicalobject::Setup(b2WorldId world, b2BodyType type, b2Vec2 position) {
     shape_def_.density = 1.0f;
     shape_def_.material.friction = 0.0f;
     shape_def_.material.restitution = 1.0f;
-    b2CreatePolygonShape(body_, &shape_def_, &square);   // un carré est un polygone
+    b2CreatePolygonShape(body_, &shape_def_, &square);
 
     b2MassData myMassData{};
     myMassData.mass = 5.0f;
