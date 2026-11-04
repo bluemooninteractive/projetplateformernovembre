@@ -31,6 +31,7 @@ add_executable(Box2D_Starter
         Box2D_Starter/src/physicalobject.cpp
         Box2D_Starter/include/Entity.hpp
         Box2D_Starter/src/Entity.cpp
+        Box2D_Starter/include/constants.hpp
 )
 target_include_directories(Box2D_Starter PRIVATE Box2D_Starter/include)   # les .h
 target_link_libraries(Box2D_Starter PRIVATE SFML::Graphics SFML::Window SFML::System box2d::box2d)

@@ -12,7 +12,9 @@ class physicalobject {
     b2ShapeDef shape_def_;
 
 public:
-    // crée le corps dans le monde : son type (dynamique, statique...) et sa position de départ, en mètres
+    b2Vec2 GetPosition();
+
+
     void Setup(b2WorldId world, b2BodyType type, b2Vec2 position);
     void Update();
 };

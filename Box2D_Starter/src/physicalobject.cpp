@@ -31,5 +31,9 @@ void physicalobject::Setup(b2WorldId world, b2BodyType type, b2Vec2 position) {
 
 void physicalobject::Update() {
     const b2Vec2 position = b2Body_GetPosition(body_);
-    std::println("object position {} : {}", position.x, position.y);
+    std::println("object position {} : {}", b2Body_GetPosition(body_).x, b2Body_GetPosition(body_).y);
+}
+
+b2Vec2 physicalobject::GetPosition(){
+    return b2Body_GetPosition(body_);
 }
