@@ -1,6 +1,7 @@
 {
   "name": "sfml-starter",
   "version": "1.0.0",
+  "builtin-baseline": "05f42531caac26e1549dcd87cf83d3160f9e34a4",
   "dependencies": [
     {
       "name": "sfml",
@@ -10,6 +11,7 @@
         "window",
         "audio"
       ]
-    }
+    },
+    "box2d"
   ]
 }
