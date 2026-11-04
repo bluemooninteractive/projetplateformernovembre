@@ -8,6 +8,7 @@
 #include <box2d/box2d.h>
 #include <SFML/System.hpp>
 
+#include "Entity.hpp"
 #include "physicalobject.h"
 
 int main() {
@@ -16,7 +17,7 @@ int main() {
     def.gravity = {0.f, 9.81f};
 
     b2WorldId monde = b2CreateWorld(&def);
-    physicalobject carre(monde);   // un carré de 1 m, qui tombe
+
     sf::RenderWindow window(sf::VideoMode({1200, 800}), "Physics", sf::Style::Default);
     window.setFramerateLimit(240);
 
@@ -25,7 +26,16 @@ int main() {
     float accumulateur = 0.f;
 
     sf::Clock clock;
-    float dt;
+    double dt;
+
+    Entity mario;
+    mario.Setup(sf::Color::Red,{600.800})
+
+    physicalobject falling;   // le carré qui tombe
+    falling.Setup(monde, b2_dynamicBody, {0.f, 3.f});
+
+    physicalobject sol;       // un second objet, immobile, sur lequel il va se poser
+    sol.Setup(monde, b2_staticBody, {0.f, 10.f});
 
     while (window.isOpen()) {
 
@@ -35,15 +45,19 @@ int main() {
 
         dt = clock.restart().asSeconds();
         accumulateur += dt;
-        while (accumulateur >= kPas)
+
+
+
+        while (accumulateur >= kPas)   // autant de pas de physique que le temps écoulé en demande
         {
             b2World_Step(monde, kPas, kSousPas);
-            carre.Update();   // affiche sa position
+            falling.Update();   // affiche sa position
             accumulateur -= kPas;
         }
 
         window.clear(sf::Color::Magenta);
         window.display();
+        window.draw(mario);
     }
 
     b2DestroyWorld(monde);

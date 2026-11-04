@@ -28,7 +28,10 @@ target_link_libraries(SFML_Starter PRIVATE SFML::Graphics SFML::Window SFML::Aud
 # --- La page Box2D : un programme à part (chaque exécutable a son propre main) ---
 add_executable(Box2D_Starter
         Box2D_Starter/src/main.cpp
-        Box2D_Starter/src/physicalobject.cpp)
+        Box2D_Starter/src/physicalobject.cpp
+        Box2D_Starter/include/Entity.hpp
+        Box2D_Starter/src/Entity.cpp
+)
 target_include_directories(Box2D_Starter PRIVATE Box2D_Starter/include)   # les .h
 target_link_libraries(Box2D_Starter PRIVATE SFML::Graphics SFML::Window SFML::System box2d::box2d)
 # std::print / std::println : avec le MinGW de CLion (GCC 15), ils vivent dans une bibliothèque à part
