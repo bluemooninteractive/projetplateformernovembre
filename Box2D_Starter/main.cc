@@ -12,7 +12,7 @@
 int main() {
 
    b2WorldDef def = b2DefaultWorldDef();
-   def.gravity = {0.f, 0.68f};
+   def.gravity = {0.f, 16.f};
 
    b2WorldId monde = b2CreateWorld(&def);
 
@@ -28,13 +28,20 @@ int main() {
 
    Entity mario;
    mario.Setup(sf::Color::Red, {30,30});
-   mario.SetupPhysics(monde, b2_dynamicBody, {1,1}, true);   // true : avec un capteur de sol (pour sauter)
+   mario.SetupPhysics(monde, b2_dynamicBody, {1,1}, true);   //
    bool marioAuSol = false;
 
    Entity platform;
    platform.Setup(sf::Color::Yellow, {1200,30});                       // en pixels : toute la largeur de la fenêtre
    platform.SetupPhysics(monde, b2_staticBody,                         // en mètres : le CENTRE de la barre
       {Conversions::ScreenToPhysics(600.f), Conversions::ScreenToPhysics(785.f)});   // milieu en x, tout en bas en y (800 - 30/2)
+
+   Entity platforme2;
+   platforme2.Setup(sf::Color::White , {200, 20});
+   platforme2.SetupPhysics(monde, b2_staticBody,
+       {Conversions::ScreenToPhysics(300.f), Conversions::ScreenToPhysics(650.f)});
+
+
 
    while (window.isOpen()) {
 
@@ -77,13 +84,16 @@ int main() {
 
 
 
+
       mario.Update();
       platform.Update();
+      platforme2.Update();
       // falling.Update();
       // platform.Update();
 
       window.clear(sf::Color::Black);
       window.draw(mario);
+      window.draw(platforme2);
       window.draw(platform);
       window.display();
 
