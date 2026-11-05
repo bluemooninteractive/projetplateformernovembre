@@ -1,6 +1,7 @@
 #include "../include/entity.hpp"
 #include "../include/constants.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <print>
 
 void Entity::Setup(sf::Color color, sf::Vector2f size) {
     shape.setFillColor(color);
@@ -10,7 +11,7 @@ void Entity::Setup(sf::Color color, sf::Vector2f size) {
     shape.setOrigin({size.x / 2, size.y / 2});
 }
 
-void Entity::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position) {
+void Entity::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position, bool withSensor) {
 
     b2Vec2 halfSize = {Conversions::ScreenToPhysics(shape.getSize().x / 2), Conversions::ScreenToPhysics(shape.getSize().y / 2)};
 
@@ -20,6 +21,10 @@ void Entity::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position) {
         position,
         halfSize
     );
+    hasSensor = withSensor;
+    if (hasSensor){
+        grounded.Setup(physics.GetBodyId(), {halfSize.x * 0.8f, 0.08f}, {0.f, halfSize.y});
+    }
 }
 
 void Entity::Update() {
@@ -30,7 +35,36 @@ void Entity::Update() {
     newPosition.x = Conversions::PhysicsToScreen(physics.GetPosition().x);
     newPosition.y = Conversions::PhysicsToScreen(physics.GetPosition().y);
 
+    if (hasSensor) {   
+        if (OnGround()){
+            shape.setFillColor(sf::Color::Green);
+        }else{
+            shape.setFillColor(sf::Color::Red);
+        }
+    }
     shape.setPosition(newPosition);
+}
+
+// ----- les mouvements -----
+
+
+void Entity::Right() {
+    physics.SetXVelocity(walkSpeed);
+}
+
+void Entity::Left() {
+    physics.SetXVelocity(-walkSpeed);
+}
+
+void Entity::Jump() {
+    std::println("[Entity::Jump] au sol : {}", OnGround());
+    if (OnGround()) {            
+        physics.Jump(jumpSpeed);
+    }
+}
+
+void Entity::CancelMovement() {
+    physics.SetXVelocity(0.f);          
 }
 
 void Entity::draw(sf::RenderTarget &target, sf::RenderStates states) const {

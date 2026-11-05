@@ -2,6 +2,7 @@
 // Created by Jerem on 05.11.2026.
 //
 #include "../include/sensor.hpp"
+#include <box2d/box2d.h>
 
 
 void Sensor::Setup(b2BodyId body_id, b2Vec2 halfsize, b2Vec2 offset) {

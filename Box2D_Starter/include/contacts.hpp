@@ -26,13 +26,17 @@ inline void SensorsContact(b2WorldId worldId) {
 
     for (int i = 0; i < sensors.endCount; ++i) {
         const b2SensorEndTouchEvent &e = sensors.endEvents[i];
-        if (!b2Shape_IsValid(e.sensorShapeId)) continue;
 
         auto *a = static_cast<Sensor *>(b2Shape_GetUserData(e.sensorShapeId));
+        auto *b = static_cast<Sensor *>(b2Shape_GetUserData(e.visitorShapeId));
         if (a) {
             a->End();
         }
+        if (b) {
+            b->Begin();
+        }
     }
+
 }
 
 #endif //SFML_PROJECT_MASTER_CONTACTS_HPP

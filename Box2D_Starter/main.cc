@@ -28,13 +28,13 @@ int main() {
 
    Entity mario;
    mario.Setup(sf::Color::Red, {30,30});
-   mario.SetupPhysics(monde, b2_dynamicBody, {1,1});
-   mario.AddGroundSensor();             // pour savoir s'il a le droit de sauter
+   mario.SetupPhysics(monde, b2_dynamicBody, {1,1}, true);   // true : avec un capteur de sol (pour sauter)
    bool marioAuSol = false;
 
    Entity platform;
-   platform.Setup(sf::Color::Yellow, {200,30});
-   platform.SetupPhysics(monde, b2_staticBody, {1,10});
+   platform.Setup(sf::Color::Yellow, {1200,30});                       // en pixels : toute la largeur de la fenêtre
+   platform.SetupPhysics(monde, b2_staticBody,                         // en mètres : le CENTRE de la barre
+      {Conversions::ScreenToPhysics(600.f), Conversions::ScreenToPhysics(785.f)});   // milieu en x, tout en bas en y (800 - 30/2)
 
    while (window.isOpen()) {
 
@@ -49,16 +49,18 @@ int main() {
          // le saut : un événement, pour qu'un appui donne un seul saut (pas un rebond tant qu'on garde la touche)
          if (const auto* touche = event->getIf<sf::Event::KeyPressed>()) {
             if (touche->code == sf::Keyboard::Key::Space) {
-               mario.Jump(7.7f);             // environ 3 m de haut : v = racine(2 x 9.81 x 3)
+               mario.Jump();
             }
          }
       }
 
       // gauche / droite : tant que la touche est enfoncée
-      float vitesse = 0.f;
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))  vitesse -= 5.f;   // 5 m/s = 100 pixels par seconde
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) vitesse += 5.f;
-      mario.Move(vitesse);
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+         mario.Left();
+      else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+         mario.Right();
+      else
+         mario.CancelMovement();   // aucune flèche : il s'arrête
 
       while (accumulateur_ >= kPas)
       {
