@@ -38,27 +38,20 @@ b2Vec2 PhysicalObject::GetPosition() {
 }
 
 void PhysicalObject::AddGroundSensor() {
-    // y descend (gravité +9.81) : les pieds sont en +halfSize_.y. Un peu moins large que le corps,
-    // pour ne pas prendre un mur touché de côté pour un sol.
-    const b2Polygon feet = b2MakeOffsetBox(halfSize_.x * 0.8f, 0.08f, {0.f, halfSize_.y}, b2Rot_identity);
-
-    b2ShapeDef def = b2DefaultShapeDef();
-    def.isSensor = true;                // il détecte, il n'arrête rien
-    def.enableSensorEvents = true;      // sans ça : aucun événement
-    def.userData = &groundContacts_;    // l'événement saura quel compteur changer
-
-    b2CreatePolygonShape(body_, &def, &feet);
+    // y descend : les pieds sont en +halfSize_.y ; un peu moins large que le corps, pour ignorer les murs
+    groundSensor_.Setup(body_, {halfSize_.x * 0.8f, 0.08f}, {0.f, halfSize_.y});
 }
 
-void PhysicalObject::ProcessSensorEvents(b2WorldId world) {
-    const b2SensorEvents events = b2World_GetSensorEvents(world);
+// On passe par le corps Box2D (sa vitesse) : c'est lui qui décide où est l'objet, l'image suit dans Entity::Update.
+void PhysicalObject::Move(float speedX) {
+    b2Vec2 v = b2Body_GetLinearVelocity(body_);
+    v.x = speedX;                                  // on garde la vitesse verticale (chute, saut)
+    b2Body_SetLinearVelocity(body_, v);
+}
 
-    for (int i = 0; i < events.beginCount; ++i) {
-        int* counter = static_cast<int*>(b2Shape_GetUserData(events.beginEvents[i].sensorShapeId));
-        if (counter) ++*counter;        // un sol de plus sous les pieds
-    }
-    for (int i = 0; i < events.endCount; ++i) {
-        int* counter = static_cast<int*>(b2Shape_GetUserData(events.endEvents[i].sensorShapeId));
-        if (counter) --*counter;        // un sol de moins
-    }
+void PhysicalObject::Jump(float speed) {
+    if (!OnGround()) return;                       // pas de saut en l'air
+    b2Vec2 v = b2Body_GetLinearVelocity(body_);
+    v.y = -speed;                                  // y descend : vers le haut, c'est négatif
+    b2Body_SetLinearVelocity(body_, v);
 }

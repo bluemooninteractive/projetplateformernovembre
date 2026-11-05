@@ -15,6 +15,7 @@ class Entity : public sf::Drawable {
     sf::RectangleShape shape;
     sf::Texture texture;
     PhysicalObject physics;
+    Sensor grounded;
 
     public:
     void Setup(sf::Color color, sf::Vector2f size);
@@ -22,6 +23,8 @@ class Entity : public sf::Drawable {
     void Update();
     void AddGroundSensor() { physics.AddGroundSensor(); }
     bool OnGround() const { return physics.OnGround(); }
+    void Move(float speedX) { physics.Move(speedX); }
+    void Jump(float speed) { physics.Jump(speed); }
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 };

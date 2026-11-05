@@ -7,6 +7,7 @@
 #include "include/constants.hpp"
 #include "include/entity.hpp"
 #include "include/physical_object.hpp"
+#include "include/contacts.hpp"
 
 int main() {
 
@@ -44,19 +45,35 @@ int main() {
          if (event->is<sf::Event::Closed>()) {
             window.close();
          }
+
+         // le saut : un événement, pour qu'un appui donne un seul saut (pas un rebond tant qu'on garde la touche)
+         if (const auto* touche = event->getIf<sf::Event::KeyPressed>()) {
+            if (touche->code == sf::Keyboard::Key::Space) {
+               mario.Jump(7.7f);             // environ 3 m de haut : v = racine(2 x 9.81 x 3)
+            }
+         }
       }
+
+      // gauche / droite : tant que la touche est enfoncée
+      float vitesse = 0.f;
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))  vitesse -= 5.f;   // 5 m/s = 100 pixels par seconde
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) vitesse += 5.f;
+      mario.Move(vitesse);
 
       while (accumulateur_ >= kPas)
       {
          b2World_Step(monde, kPas / 1000.f, kSousPas);
-         PhysicalObject::ProcessSensorEvents(monde);   // les capteurs se mettent à jour après chaque pas
+         SensorsContact(monde);
          accumulateur_ -= kPas;
       }
 
-      if (mario.OnGround() != marioAuSol) {   // on l'affiche seulement quand ça change
+      if (mario.OnGround() != marioAuSol) {
          marioAuSol = mario.OnGround();
          std::println("{}", marioAuSol ? "Mario touche le sol" : "Mario est en l'air");   // le format doit être fixe
       }
+
+
+
 
       mario.Update();
       platform.Update();
