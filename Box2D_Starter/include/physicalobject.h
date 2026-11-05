@@ -7,15 +7,13 @@
 #include <box2d/box2d.h>
 
 class physicalobject {
-    b2BodyDef def_;
-    b2BodyId body_;
-    b2ShapeDef shape_def_;
+    b2BodyId body_ = b2_nullBodyId;
 
 public:
-    b2Vec2 GetPosition();
+    b2Vec2 GetPosition() const;
 
 
-    void Setup(b2WorldId world, b2BodyType type, b2Vec2 position);
+    void Setup(b2WorldId world, b2BodyType type, b2Vec2 position, b2Vec2 size);
     void Update();
 };
 

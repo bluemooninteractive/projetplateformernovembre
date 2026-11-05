@@ -6,20 +6,20 @@
 
 #include <print>
 
-void physicalobject::Setup(b2WorldId world, b2BodyType type, b2Vec2 position) {
-    def_ = b2DefaultBodyDef();
-    def_.type = type;
-    def_.position = position;
+void physicalobject::Setup(b2WorldId world, b2BodyType type, b2Vec2 position, b2Vec2 size) {
+    b2BodyDef def = b2DefaultBodyDef();
+    def.type = type;
+    def.position = position;
 
-    body_ = b2CreateBody(world, &def_);
+    body_ = b2CreateBody(world, &def);
 
-    b2Polygon square=b2MakeSquare(0.5f);
+    b2Polygon box = b2MakeBox(size.x / 2.f, size.y / 2.f);
 
-    b2ShapeDef shape_def_ = b2DefaultShapeDef();
-    shape_def_.density = 1.0f;
-    shape_def_.material.friction = 0.0f;
-    shape_def_.material.restitution = 1.0f;
-    b2CreatePolygonShape(body_, &shape_def_, &square);
+    b2ShapeDef shape_def = b2DefaultShapeDef();
+    shape_def.density = 1.0f;
+    shape_def.material.friction = 0.0f;
+    shape_def.material.restitution = 1.0f;
+    b2CreatePolygonShape(body_, &shape_def, &box);
 
     b2MassData myMassData{};
     myMassData.mass = 5.0f;
@@ -31,9 +31,9 @@ void physicalobject::Setup(b2WorldId world, b2BodyType type, b2Vec2 position) {
 
 void physicalobject::Update() {
     const b2Vec2 position = b2Body_GetPosition(body_);
-    std::println("object position {} : {}", b2Body_GetPosition(body_).x, b2Body_GetPosition(body_).y);
+    std::println("object position {} : {}", position.x, position.y);
 }
 
-b2Vec2 physicalobject::GetPosition(){
+b2Vec2 physicalobject::GetPosition() const {
     return b2Body_GetPosition(body_);
 }

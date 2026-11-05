@@ -1,0 +1,476 @@
+<title>Le Cochon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --felt-deep:      #16211b;
+    --felt:           #24382d;
+    --felt-raised:    #2e4638;
+    --chalk:          #ece4d3;
+    --chalk-dim:      #b9c3b6;
+    --brass:          #cc9f3a;
+    --brass-bright:   #e6b94c;
+    --sage:           #7fa583;
+    --barn-red:       #c1503f;
+    --barn-red-bright:#e06a56;
+    --wood-shadow:    rgba(0,0,0,0.45);
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 90% 65% at 50% 8%, rgba(255,224,168,0.09), transparent 60%),
+      radial-gradient(ellipse 140% 100% at 50% 110%, rgba(0,0,0,0.55), transparent 55%),
+      var(--felt-deep);
+    color:var(--chalk);
+    font-family:'Work Sans', 'Segoe UI', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 18px;
+  }
+
+  .stage{ width:100%; display:flex; justify-content:center; }
+
+  .table{
+    position:relative;
+    width:100%;
+    max-width:520px;
+    background:
+      repeating-linear-gradient(125deg, rgba(255,255,255,0.014) 0 2px, transparent 2px 5px),
+      linear-gradient(160deg, var(--felt-raised), var(--felt) 55%, var(--felt-deep));
+    border-radius:22px;
+    padding:36px 34px 32px;
+    box-shadow:
+      0 30px 70px var(--wood-shadow),
+      inset 0 0 0 1px rgba(236,228,211,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .table::before{
+    content:"";
+    position:absolute;
+    inset:10px;
+    border-radius:15px;
+    border:1.5px dashed rgba(236,228,211,0.16);
+    pointer-events:none;
+  }
+
+  .masthead{ text-align:center; margin-bottom:26px; }
+
+  .title{
+    font-family:'Bricolage Grotesque', 'Segoe UI', sans-serif;
+    font-optical-sizing:auto;
+    font-weight:700;
+    font-size:clamp(2.2rem, 7vw, 3rem);
+    letter-spacing:0.01em;
+    margin:0 0 6px;
+    color:var(--chalk);
+    text-wrap:balance;
+  }
+
+  .swash{ display:block; width:min(220px, 60%); height:14px; margin:2px auto 14px; }
+  .swash path{ fill:none; stroke:var(--brass); stroke-width:3.5; stroke-linecap:round; }
+
+  .tagline{
+    margin:0 auto;
+    max-width:38ch;
+    color:var(--chalk-dim);
+    font-size:0.92rem;
+    line-height:1.55;
+  }
+
+  .die-picker{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:26px;
+  }
+
+  .die-tab{
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:0.82rem;
+    letter-spacing:0.04em;
+    padding:8px 15px;
+    border-radius:999px;
+    border:1.5px solid rgba(236,228,211,0.22);
+    background:transparent;
+    color:var(--chalk-dim);
+    cursor:pointer;
+    transition:border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  .die-tab:hover{ border-color:rgba(236,228,211,0.45); color:var(--chalk); }
+  .die-tab.active{
+    background:var(--brass);
+    border-color:var(--brass);
+    color:#241a06;
+  }
+  .die-tab:focus-visible, .btn:focus-visible, .custom-input:focus-visible{
+    outline:2px solid var(--brass-bright);
+    outline-offset:2px;
+  }
+
+  .custom-input{
+    width:76px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.9rem;
+    text-align:center;
+    padding:7px 6px;
+    border-radius:10px;
+    border:1.5px solid rgba(236,228,211,0.3);
+    background:rgba(0,0,0,0.2);
+    color:var(--chalk);
+  }
+  .custom-input::-webkit-inner-spin-button{ opacity:0.6; }
+
+  .arena{
+    display:flex;
+    justify-content:center;
+    margin-bottom:24px;
+  }
+
+  .die-face{
+    position:relative;
+    width:104px;
+    height:104px;
+    border-radius:22px;
+    background:linear-gradient(155deg, #f4ecd8, #d9cba3);
+    box-shadow:
+      0 10px 0 rgba(0,0,0,0.28),
+      0 16px 26px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform-style:preserve-3d;
+  }
+
+  .die-face.rolling{ animation:tumble 0.5s ease; }
+  @media (prefers-reduced-motion: reduce){
+    .die-face.rolling{ animation:none; }
+  }
+  @keyframes tumble{
+    0%{ transform:rotate(0deg) scale(1); }
+    35%{ transform:rotate(160deg) scale(1.08); }
+    70%{ transform:rotate(300deg) scale(0.96); }
+    100%{ transform:rotate(360deg) scale(1); }
+  }
+
+  .die-face.bust{ background:linear-gradient(155deg, #e7c3b8, #cf8f7f); }
+  .die-face.locked{ background:linear-gradient(155deg, #f0dfa6, #dcbf6c); }
+
+  .pip-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    grid-template-rows:repeat(3, 1fr);
+    width:66%;
+    height:66%;
+  }
+  .pip{ align-self:center; justify-self:center; width:14px; height:14px; border-radius:50%; background:#2a2016; }
+  .pip.on{ visibility:visible; } .pip.off{ visibility:hidden; }
+
+  .die-number{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:2.1rem;
+    color:#2a2016;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .scoreboard{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:18px;
+  }
+
+  .stat{
+    background:rgba(0,0,0,0.22);
+    border:1px solid rgba(236,228,211,0.1);
+    border-radius:14px;
+    padding:14px 12px;
+    text-align:center;
+  }
+
+  .stat-label{
+    display:block;
+    font-size:0.7rem;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--chalk-dim);
+    margin-bottom:6px;
+  }
+
+  .stat-value{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:1.9rem;
+    font-variant-numeric:tabular-nums;
+    color:var(--brass-bright);
+  }
+  .stat-secondary .stat-value{ color:var(--sage); font-size:1.6rem; }
+
+  .history{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    min-height:30px;
+    justify-content:center;
+    margin-bottom:16px;
+  }
+  .chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    font-variant-numeric:tabular-nums;
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(236,228,211,0.08);
+    border:1px solid rgba(236,228,211,0.18);
+    color:var(--chalk-dim);
+  }
+  .chip.chip-bust{ background:rgba(193,80,63,0.25); border-color:var(--barn-red); color:var(--barn-red-bright); }
+
+  .status{
+    text-align:center;
+    min-height:1.4em;
+    margin:0 0 20px;
+    font-size:0.9rem;
+    color:var(--chalk-dim);
+  }
+  .status.status-bust{ color:var(--barn-red-bright); }
+  .status.status-locked{ color:var(--brass-bright); }
+  .status.status-banked{ color:var(--sage); }
+
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+  }
+
+  .btn{
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:0.95rem;
+    padding:12px 24px;
+    border-radius:12px;
+    border:1.5px solid transparent;
+    cursor:pointer;
+    transition:transform 0.1s ease, filter 0.15s ease, opacity 0.15s ease;
+  }
+  .btn:disabled{ opacity:0.35; cursor:not-allowed; }
+  .btn:not(:disabled):hover{ filter:brightness(1.08); }
+  .btn:not(:disabled):active{ transform:translateY(1px); }
+
+  .btn-primary{ background:var(--brass); color:#241a06; }
+  .btn-secondary{ background:transparent; border-color:var(--sage); color:var(--sage); }
+  .btn-ghost{ background:transparent; border-color:rgba(236,228,211,0.35); color:var(--chalk); }
+
+  @media (max-width:420px){
+    .table{ padding:28px 20px 26px; }
+    .stat-value{ font-size:1.5rem; }
+  }
+</style>
+
+<div class="stage">
+  <div class="table">
+    <header class="masthead">
+      <h1 class="title">Le Cochon</h1>
+      <svg class="swash" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M2 8 Q 40 2, 75 8 T 148 7 T 218 6"></path>
+      </svg>
+      <p class="tagline">Lance le dé, cumule les points, arrête-toi à temps. Un 1 efface tout le tour. Au-delà de 20, la partie se fige et le score est bloqué.</p>
+    </header>
+
+    <div class="die-picker" role="group" aria-label="Choix du dé">
+      <button class="die-tab active" data-sides="6" type="button">D6</button>
+      <button class="die-tab" data-sides="8" type="button">D8</button>
+      <button class="die-tab" data-sides="20" type="button">D20</button>
+      <button class="die-tab" data-sides="39" type="button">D39</button>
+      <button class="die-tab" data-sides="custom" type="button">Perso</button>
+      <input type="number" id="customSides" class="custom-input" min="3" max="999" value="39" hidden aria-label="Nombre de faces personnalisé">
+    </div>
+
+    <div class="arena">
+      <div class="die-face" id="dieFace" aria-live="polite">
+        <span class="die-number" id="dieNumber">–</span>
+      </div>
+    </div>
+
+    <div class="scoreboard">
+      <div class="stat">
+        <span class="stat-label">Somme en cours</span>
+        <span class="stat-value" id="currentSum">0</span>
+      </div>
+      <div class="stat stat-secondary">
+        <span class="stat-label">Meilleur score</span>
+        <span class="stat-value" id="bestScore">0</span>
+      </div>
+    </div>
+
+    <div class="history" id="history" aria-label="Lancers de ce tour"></div>
+
+    <p class="status" id="status" role="status">Dé à 6 faces choisi. Lance quand tu veux.</p>
+
+    <div class="actions">
+      <button id="rollBtn" class="btn btn-primary" type="button">Lancer le dé</button>
+      <button id="stopBtn" class="btn btn-secondary" type="button" disabled>S'arrêter</button>
+      <button id="newRoundBtn" class="btn btn-ghost" type="button" hidden>Nouveau tour</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CAP = 20;
+  var sides = 6;
+  var sum = 0;
+  var rollsThisRound = [];
+  var roundOver = false;
+  var bestScore = 0;
+
+  var dieTabs = Array.prototype.slice.call(document.querySelectorAll('.die-tab'));
+  var customInput = document.getElementById('customSides');
+  var dieFace = document.getElementById('dieFace');
+  var dieNumber = document.getElementById('dieNumber');
+  var currentSumEl = document.getElementById('currentSum');
+  var bestScoreEl = document.getElementById('bestScore');
+  var historyEl = document.getElementById('history');
+  var statusEl = document.getElementById('status');
+  var rollBtn = document.getElementById('rollBtn');
+  var stopBtn = document.getElementById('stopBtn');
+  var newRoundBtn = document.getElementById('newRoundBtn');
+
+  try {
+    var saved = localStorage.getItem('cochon_best_score');
+    if (saved !== null && !isNaN(parseInt(saved, 10))) {
+      bestScore = parseInt(saved, 10);
+    }
+  } catch (e) {}
+  bestScoreEl.textContent = bestScore;
+
+  function saveBest(){
+    try { localStorage.setItem('cochon_best_score', String(bestScore)); } catch (e) {}
+  }
+
+  function setStatus(text, kind){
+    statusEl.textContent = text;
+    statusEl.className = 'status' + (kind ? ' status-' + kind : '');
+  }
+
+  function selectDie(tab){
+    dieTabs.forEach(function(t){ t.classList.remove('active'); });
+    tab.classList.add('active');
+    if (tab.dataset.sides === 'custom') {
+      customInput.hidden = false;
+      sides = Math.max(3, Math.min(999, parseInt(customInput.value, 10) || 39));
+    } else {
+      customInput.hidden = true;
+      sides = parseInt(tab.dataset.sides, 10);
+    }
+    resetRound();
+    setStatus('Dé à ' + sides + ' faces choisi. Lance quand tu veux.');
+  }
+
+  dieTabs.forEach(function(tab){
+    tab.addEventListener('click', function(){ selectDie(tab); });
+  });
+
+  customInput.addEventListener('change', function(){
+    var v = Math.max(3, Math.min(999, parseInt(customInput.value, 10) || 39));
+    customInput.value = v;
+    sides = v;
+    resetRound();
+    setStatus('Dé personnalisé à ' + sides + ' faces. Lance quand tu veux.');
+  });
+
+  function resetRound(){
+    sum = 0;
+    rollsThisRound = [];
+    roundOver = false;
+    currentSumEl.textContent = '0';
+    historyEl.innerHTML = '';
+    dieFace.className = 'die-face';
+    dieNumber.textContent = '–';
+    rollBtn.disabled = false;
+    stopBtn.disabled = true;
+    newRoundBtn.hidden = true;
+  }
+
+  function addChip(value, bust){
+    var chip = document.createElement('span');
+    chip.className = 'chip' + (bust ? ' chip-bust' : '');
+    chip.textContent = value;
+    historyEl.appendChild(chip);
+  }
+
+  function endRound(){
+    roundOver = true;
+    rollBtn.disabled = true;
+    stopBtn.disabled = true;
+    newRoundBtn.hidden = false;
+  }
+
+  function roll(){
+    if (roundOver) return;
+    var value = 1 + Math.floor(Math.random() * sides);
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    dieFace.classList.remove('rolling');
+    if (!reduceMotion) {
+      void dieFace.offsetWidth;
+      dieFace.classList.add('rolling');
+    }
+    dieNumber.textContent = value;
+
+    if (value === 1) {
+      addChip(value, true);
+      dieFace.classList.add('bust');
+      sum = 0;
+      currentSumEl.textContent = '0';
+      setStatus('Un 1 ! Le tour est perdu, tout est effacé.', 'bust');
+      endRound();
+      return;
+    }
+
+    addChip(value, false);
+    sum += value;
+    currentSumEl.textContent = sum;
+    stopBtn.disabled = false;
+
+    if (sum > CAP) {
+      dieFace.classList.add('locked');
+      if (sum > bestScore) { bestScore = sum; bestScoreEl.textContent = bestScore; saveBest(); }
+      setStatus('Score au-delà de ' + CAP + ' — la partie se fige à ' + sum + ' points.', 'locked');
+      endRound();
+      return;
+    }
+
+    setStatus('Total : ' + sum + '. Continue ou arrête-toi.');
+  }
+
+  function stopAndBank(){
+    if (roundOver || sum === 0) return;
+    if (sum > bestScore) { bestScore = sum; bestScoreEl.textContent = bestScore; saveBest(); }
+    setStatus('Score de ' + sum + ' mis à l\'abri.', 'banked');
+    endRound();
+  }
+
+  rollBtn.addEventListener('click', roll);
+  stopBtn.addEventListener('click', stopAndBank);
+  newRoundBtn.addEventListener('click', function(){
+    resetRound();
+    setStatus('Nouveau tour — dé à ' + sides + ' faces. Lance quand tu veux.');
+  });
+})();
+</script>

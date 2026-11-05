@@ -20,12 +20,15 @@ class Entity : public sf::Drawable {
 
     public:
     void Update();
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void Setup(sf::Color color, sf::Vector2f position, sf::Vector2f size);
-    void SetUpPhysics(b2WorldId world, b2BodyType type, b2Vec2 position);   // crée son corps Box2D
+    void SetUpPhysics(b2WorldId world, b2BodyType type);
 
 
-
+    void MoveLeft();
+    void MoveRight();
+    void Jump();
+    
 
 
 

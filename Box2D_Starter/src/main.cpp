@@ -8,6 +8,7 @@
 #include <box2d/box2d.h>
 #include <SFML/System.hpp>
 
+#include "constants.hpp"
 #include "Entity.hpp"
 #include "physicalobject.h"
 
@@ -30,13 +31,11 @@ int main() {
 
     Entity mario;
     mario.Setup(sf::Color::Red,{600,400},{45,45});
-    mario.SetUpPhysics(monde, b2_dynamicBody, {12.f, 2.f});   // son corps Box2D : 12 m = 600 px, 2 m = 100 px
+    mario.SetUpPhysics(monde, b2_dynamicBody);
 
-    physicalobject falling;
-    falling.Setup(monde, b2_dynamicBody, {0.f, 3.f});
-
-    physicalobject sol;
-    sol.Setup(monde, b2_staticBody, {0.f, 10.f});
+    Entity platform;
+    platform.Setup(sf::Color::Yellow, {600, 700}, {600, 30});
+    platform.SetUpPhysics(monde, b2_staticBody);
 
     while (window.isOpen()) {
 
@@ -47,18 +46,24 @@ int main() {
         dt = clock.restart().asSeconds();
         accumulateur += dt;
 
+        while (const std::optional event = window.pollEvent()) {
+            if (key->scancode() == sf::Keyboard::Escape) {
+                window.close();
+            }
+        }
+
 
 
         while (accumulateur >= kPas)
         {
             b2World_Step(monde, kPas, kSousPas);
             mario.Update();
-            falling.Update();
-            sol.Update();
+            platform.Update();
             accumulateur -= kPas;
         }
 
         window.clear(sf::Color::Black);
+        window.draw(platform);
         window.draw(mario);
         window.display();
     }
