@@ -23,11 +23,10 @@ class Entity : public sf::Drawable {
 
     public:
     void Setup(sf::Color color, sf::Vector2f size);
-    // withSensor : true pour le héros (un capteur de sol sous ses pieds), false pour une plateforme
     void SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position, bool withSensor = false);
     void Update();
     bool OnGround() const { return hasSensor && grounded.Touching(); }
-    // les mouvements (écrits dans entity.cc)
+
     void Right();               // marche vers la droite
     void Left();                // marche vers la gauche
     void Jump();                // saute, seulement s'il touche le sol

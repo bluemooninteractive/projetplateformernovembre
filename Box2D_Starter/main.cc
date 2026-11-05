@@ -12,7 +12,7 @@
 int main() {
 
    b2WorldDef def = b2DefaultWorldDef();
-   def.gravity = {0.f, 9.81f};          // vers le bas, en m/s²
+   def.gravity = {0.f, 0.68f};
 
    b2WorldId monde = b2CreateWorld(&def);
 
