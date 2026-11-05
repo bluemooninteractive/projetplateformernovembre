@@ -1,25 +1,22 @@
 //
-// Created by Jerem on 04.11.2026.
+// Created by sebas on 04.11.2026.
 //
 
-#ifndef SFML_STARTER_CONSTANTS_HPP
-#define SFML_STARTER_CONSTANTS_HPP
+#ifndef SFML_PROJECT_MASTER_CONSTANTS_HPP
+#define SFML_PROJECT_MASTER_CONSTANTS_HPP
 
+class Conversions {
 
+    static constexpr float pixelsToMeters = 0.05f;
 
-namespace Conversion {
-    constexpr float pixelToMeters = 0.05f;
-
-    constexpr float PhysicsToScreen(float meters) {
-        return meters / pixelToMeters;
+public:
+    static float PhysicsToScreen(float meters) {
+        return meters / pixelsToMeters;
     }
 
-    constexpr float ScreenToPhysics(float pixels) {
-        return pixels * pixelToMeters;
+    static float ScreenToPhysics(float pixels) {
+        return pixels * pixelsToMeters;
     }
-}
+};
 
-
-
-
-#endif //SFML_STARTER_CONSTANTS_HPP
+#endif //SFML_PROJECT_MASTER_CONSTANTS_HPP
