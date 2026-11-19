@@ -28,12 +28,8 @@ inline void SensorsContact(b2WorldId worldId) {
         const b2SensorEndTouchEvent &e = sensors.endEvents[i];
 
         auto *a = static_cast<Sensor *>(b2Shape_GetUserData(e.sensorShapeId));
-        auto *b = static_cast<Sensor *>(b2Shape_GetUserData(e.visitorShapeId));
         if (a) {
             a->End();
-        }
-        if (b) {
-            b->Begin();
         }
     }
 

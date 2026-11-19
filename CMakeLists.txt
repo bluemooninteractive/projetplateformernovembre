@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 4.3)
 
-# --- vcpkg (avant project(), c'est là qu'il lit ses réglages) ---
-# Le vcpkg de CLion, avec MinGW : SFML et Box2D sont installés d'après vcpkg.json.
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE "$ENV{USERPROFILE}/.vcpkg-clion/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 endif()

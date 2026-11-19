@@ -14,15 +14,16 @@
 class Entity : public sf::Drawable {
 
     sf::RectangleShape shape;
-    sf::Texture texture;
     PhysicalObject physics;
     Sensor grounded;
     bool hasSensor = false;
+    bool hasTexture = false;   // un sprite remplace la couleur unie
     float walkSpeed = 12.f;
     float jumpSpeed = 12.f;
 
     public:
     void Setup(sf::Color color, sf::Vector2f size);
+    void SetTexture(const sf::Texture &texture, bool repeter = false);   // repeter : tuile répétée (plateformes)
     void SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position, bool withSensor = false);
     void Update();
     bool OnGround() const { return hasSensor && grounded.Touching(); }
@@ -30,6 +31,8 @@ class Entity : public sf::Drawable {
     void Right();               // marche vers la droite
     void Left();                // marche vers la gauche
     void Jump();                // saute, seulement s'il touche le sol
+    void Respawn(b2Vec2 position) { physics.Teleport(position); }   // en mètres
+    sf::Vector2f GetScreenPosition() const { return shape.getPosition(); }   // en pixels (après Update)
     void CancelMovement();      // s'arrête à l'horizontale (garde sa chute ou son saut)
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

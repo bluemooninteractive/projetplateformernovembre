@@ -11,6 +11,18 @@ void Entity::Setup(sf::Color color, sf::Vector2f size) {
     shape.setOrigin({size.x / 2, size.y / 2});
 }
 
+void Entity::SetTexture(const sf::Texture &texture, bool repeter) {
+    shape.setTexture(&texture);
+    shape.setFillColor(sf::Color::White);   // blanc = les vraies couleurs de l'image
+    shape.setOutlineThickness(0);           // plus de contour blanc
+    if (repeter) {
+        // La tuile se répète sur toute la taille (plateformes)
+        shape.setTextureRect({{0, 0}, {static_cast<int>(shape.getSize().x),
+                                       static_cast<int>(shape.getSize().y)}});
+    }
+    hasTexture = true;
+}
+
 void Entity::SetupPhysics(b2WorldId &world, b2BodyType type, b2Vec2 position, bool withSensor) {
 
     b2Vec2 halfSize = {Conversions::ScreenToPhysics(shape.getSize().x / 2), Conversions::ScreenToPhysics(shape.getSize().y / 2)};
@@ -35,7 +47,7 @@ void Entity::Update() {
     newPosition.x = Conversions::PhysicsToScreen(physics.GetPosition().x);
     newPosition.y = Conversions::PhysicsToScreen(physics.GetPosition().y);
 
-    if (hasSensor) {   
+    if (hasSensor && !hasTexture) {   // le vert/rouge "au sol" teinterait le sprite   
         if (OnGround()){
             shape.setFillColor(sf::Color::Green);
         }else{
@@ -57,7 +69,6 @@ void Entity::Left() {
 }
 
 void Entity::Jump() {
-    std::println("[Entity::Jump] au sol : {}", OnGround());
     if (OnGround()) {            
         physics.Jump(jumpSpeed);
     }
