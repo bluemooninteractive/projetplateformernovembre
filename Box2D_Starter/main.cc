@@ -11,27 +11,28 @@
 #include "include/contacts.hpp"
 #include "include/geme.hpp"
 #include "include/arrivee.hpp"
+#include "include/settings.hpp"
 #include <vector>
 
 int main() {
    b2WorldDef def = b2DefaultWorldDef();
-   def.gravity = {0.f, 16.f};
+   def.gravity = {0.f, Settings::kGravite};
 
    b2WorldId monde = b2CreateWorld(&def);
 
-   sf::RenderWindow window(sf::VideoMode({1200, 800}), "Physics", sf::Style::Default);
+   sf::RenderWindow window(sf::VideoMode({Settings::kFenetreLargeur, Settings::kFenetreHauteur}), "Physics", sf::Style::Default);
    window.setFramerateLimit(240);
    window.setKeyRepeatEnabled(false);   // un appui = un seul KeyPressed, donc un seul saut
 
-   constexpr float kPas = 1.f / 60.f;
-   constexpr int kSousPas = 4;
+   constexpr float kPas = Settings::kPas;
+   constexpr int kSousPas = Settings::kSousPas;
    float accumulateur_ = 0.f;
 
    sf::Clock clock;
 
    Entity mario;
-   mario.Setup(sf::Color::Red, {30,30});
-   const b2Vec2 departMario = {1, 1};   // en mètres : là où Mario (ré)apparaît
+   mario.Setup(sf::Color::Red, Settings::kTailleJoueur);
+   const b2Vec2 departMario = Settings::kDepart;   // en mètres : là où Mario (ré)apparaît
    mario.SetupPhysics(monde, b2_dynamicBody, departMario, true);
    bool marioAuSol = false;
 
@@ -107,7 +108,7 @@ int main() {
    bool gagne = false;
 
    // Essais : Mario en perd un quand il tombe hors de l'écran
-   constexpr int kEssaisMax = 5;
+   constexpr int kEssaisMax = Settings::kEssaisMax;
    int essais = kEssaisMax;
    bool gameOver = false;
    auto majTitre = [&] {
@@ -121,7 +122,7 @@ int main() {
 
    // Caméra : on montre une zone plus petite que le niveau, donc tout paraît plus gros.
    // 720 x 480 = 60 % du niveau (1200 x 800) -> zoom x1,67. Garder le rapport 3:2.
-   sf::View camera({0.f, 0.f}, {720.f, 480.f});
+   sf::View camera({0.f, 0.f}, Settings::kCamera);
 
    float sautEnAttente = 0.f;   // > 0 : un appui sur Espace attend que Mario touche le sol
 
@@ -138,7 +139,7 @@ int main() {
 
          if (const auto* touche = event->getIf<sf::Event::KeyPressed>()) {
             if (touche->code == sf::Keyboard::Key::Space && !(gameOver || gagne)) {
-               sautEnAttente = 0.15f;   // on retient l'appui 0,15 s (appui un peu trop tôt = saut quand même)
+               sautEnAttente = Settings::kMemoireSaut;   // on retient l'appui 0,15 s (appui un peu trop tôt = saut quand même)
             }
             // Game over : R = on recommence tout
             // R : on recommence la partie (à tout moment)

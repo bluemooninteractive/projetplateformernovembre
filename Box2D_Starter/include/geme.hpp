@@ -39,10 +39,9 @@ public:
         return false;
     }
 
-    // Une image à la place du carré cyan (la texture doit vivre aussi longtemps que la gemme)
     void SetTexture(const sf::Texture &texture) {
         shape_.setTexture(&texture);
-        shape_.setFillColor(sf::Color::White);   // blanc = les vraies couleurs de l'image
+        shape_.setFillColor(sf::Color::White);  
     }
 
     void Reset() { collected_ = false; }   // de nouveau à ramasser

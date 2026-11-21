@@ -10,6 +10,7 @@
 
 #include "physical_object.hpp"
 #include "sensor.hpp"
+#include "settings.hpp"
 
 class Entity : public sf::Drawable {
 
@@ -18,8 +19,8 @@ class Entity : public sf::Drawable {
     Sensor grounded;
     bool hasSensor = false;
     bool hasTexture = false;   // un sprite remplace la couleur unie
-    float walkSpeed = 12.f;
-    float jumpSpeed = 12.f;
+    float walkSpeed = Settings::kVitesseMarche;
+    float jumpSpeed = Settings::kVitesseSaut;
 
     public:
     void Setup(sf::Color color, sf::Vector2f size);
