@@ -19,14 +19,12 @@ namespace Settings {
    constexpr unsigned kFenetreHauteur = 800;
    constexpr sf::Vector2f kCamera = {720.f, 480.f};
 
-   // --- Joueur ---
    constexpr sf::Vector2f kTailleJoueur = {30.f, 30.f};
    constexpr float kVitesseMarche = 12.f;
    constexpr float kVitesseSaut = 12.f;
    constexpr float kMemoireSaut = 0.15f;
    constexpr b2Vec2 kDepart = {1.f, 1.f};
 
-   // --- Partie ---
    constexpr int kEssaisMax = 5;
 
 }

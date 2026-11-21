@@ -105,6 +105,7 @@ int main() {
       return EXIT_FAILURE;
    }
    arrivee.SetTexture(texDrapeau);
+   sf::Font police("C:/Windows/Fonts/arial.ttf");
    bool gagne = false;
 
    // Essais : Mario en perd un quand il tombe hors de l'écran
@@ -241,6 +242,15 @@ int main() {
       for (const auto &p : plateformes) window.draw(p);
       for (const auto &g : gemmes) window.draw(g);
       window.draw(arrivee);
+
+      if (gameOver) {
+         window.setView(window.getDefaultView());
+         sf::Text texte(police, "GAME OVER", 100);
+         texte.setFillColor(sf::Color::Red);
+         texte.setPosition({330.f, 330.f});
+         window.draw(texte);
+      }
+
       window.display();
 
    }
