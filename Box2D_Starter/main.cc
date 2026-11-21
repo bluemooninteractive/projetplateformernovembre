@@ -85,6 +85,30 @@ int main() {
    }
    for (auto &g : gemmes) g.SetTexture(texGemme);
 
+   struct Piege {
+      sf::Vector2f position;
+      sf::RectangleShape forme;
+      Sensor capteur;
+   };
+   std::vector<Piege> pieges = {
+      {{ 370.f, 758.f}},
+      {{ 600.f, 758.f}},
+      {{ 760.f, 758.f}},
+      {{1100.f, 758.f}},
+   };
+   for (auto &p : pieges) {
+      p.forme.setSize({40.f, 20.f});
+      p.forme.setOrigin({20.f, 10.f});
+      p.forme.setPosition(p.position);
+      p.forme.setFillColor(sf::Color::Red);
+
+      b2BodyDef defPiege = b2DefaultBodyDef();
+      defPiege.position = {Conversions::ScreenToPhysics(p.position.x),
+                           Conversions::ScreenToPhysics(p.position.y)};
+      b2BodyId corpsPiege = b2CreateBody(monde, &defPiege);
+      p.capteur.Setup(corpsPiege, {Conversions::ScreenToPhysics(20.f), Conversions::ScreenToPhysics(10.f)});
+   }
+
    // Sprites de Mario et des plateformes (pack Kenney, CC0)
    sf::Texture texMario, texBrique;
    if (!texMario.loadFromFile(PIXEL_DIR "Characters/tile_0000.png") ||   // alien vert
@@ -212,7 +236,10 @@ int main() {
 
       // Tombé hors de l'écran (sous la fenêtre ou trop loin sur un côté) : un essai en moins
       const sf::Vector2f pos = mario.GetScreenPosition();
-      if (!gameOver && (pos.y > 850.f || pos.x < -50.f || pos.x > 1250.f)) {
+      bool touchePiege = false;
+      for (const auto &p : pieges) if (p.capteur.Touching()) touchePiege = true;
+
+      if (!gameOver && (touchePiege || pos.y > 850.f || pos.x < -50.f || pos.x > 1250.f)) {
          --essais;
          if (essais <= 0) {
             gameOver = true;
@@ -242,6 +269,7 @@ int main() {
       for (const auto &p : plateformes) window.draw(p);
       for (const auto &g : gemmes) window.draw(g);
       window.draw(arrivee);
+      for (const auto &p : pieges) window.draw(p.forme);
 
       if (gameOver) {
          window.setView(window.getDefaultView());
