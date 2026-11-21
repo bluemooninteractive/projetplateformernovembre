@@ -35,6 +35,7 @@ int main() {
    const b2Vec2 departMario = Settings::kDepart;   // en mètres : là où Mario (ré)apparaît
    mario.SetupPhysics(monde, b2_dynamicBody, departMario, true);
    bool marioAuSol = false;
+   bool pret = false;
 
    // Le sol en 3 morceaux, avec 2 trous de 120 px (tomber = un essai en moins)
    struct MorceauSol { float x, largeur; };   // x = le CENTRE, en pixels
@@ -163,7 +164,7 @@ int main() {
 
 
          if (const auto* touche = event->getIf<sf::Event::KeyPressed>()) {
-            if (touche->code == sf::Keyboard::Key::Space && !(gameOver || gagne)) {
+            if (touche->code == sf::Keyboard::Key::Space && pret && !(gameOver || gagne)) {
                sautEnAttente = Settings::kMemoireSaut;   // on retient l'appui 0,15 s (appui un peu trop tôt = saut quand même)
             }
             // Game over : R = on recommence tout
@@ -175,13 +176,14 @@ int main() {
                gagne = false;
                for (auto &g : gemmes) g.Reset();
                mario.Respawn(departMario);
+               pret = false;
                majTitre();
                std::println("Nouvelle partie !");
             }
          }
       }
 
-      if (gameOver || gagne)
+      if (gameOver || gagne || !pret)
          mario.CancelMovement();   // plus de contrôle tant qu'on n'a pas relancé
       else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
          mario.Left();
@@ -225,6 +227,8 @@ int main() {
 
       if (mario.OnGround() != marioAuSol) {
          marioAuSol = mario.OnGround();
+         if (marioAuSol)
+            pret = true;
          std::println("{}", marioAuSol ? "Mario touche le sol" : "Mario est en l'air");   // le format doit être fixe
       }
 
@@ -248,6 +252,7 @@ int main() {
             std::println("Perdu ! Il reste {} essai(s).", essais);
          }
          mario.Respawn(departMario);
+         pret = false;
          majTitre();
       }
       for (auto &m : sol) m.Update();
